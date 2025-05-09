@@ -7,23 +7,29 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Checkout code
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: Install Rust toolchain
+      - name: ⚙️ Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
 
-      - name: Add target for Windows GNU
+      - name: 🎯 Add Windows GNU target
         run: rustup target add x86_64-pc-windows-gnu
 
-      - name: Compile headless RustDesk (CLI only)
+      - name: 🛠 Compile headless RustDesk (CLI only)
         run: cargo build --release --target x86_64-pc-windows-gnu --features cli
 
-      - name: Upload artifact
-        uses: actions/upload-artifact@v3
+      - name: 📦 Prepare artifacts3 folder manually
+        run: |
+          mkdir artifacts3
+          copy target\x86_64-pc-windows-gnu\release\rustdesk.exe artifacts3\
+
+      - name: ☁️ Upload artifacts3 using stable v2
+        uses: actions/upload-artifact@v2
         with:
           name: rustdesk-headless
-          path: target/x86_64-pc-windows-gnu/release/rustdesk.exe
+          path: artifacts3/
+
