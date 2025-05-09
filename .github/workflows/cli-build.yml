@@ -1,30 +1,29 @@
 name: Build RustDesk Headless CLI
 
 on:
-  workflow_dispatch:  # Permet de déclencher manuellement dans l'interface GitHub
+  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
-
     steps:
-      - name: 📥 Checkout du code source
+      - name: 📥 Checkout code
         uses: actions/checkout@v3
 
-      - name: ⚙️ Installation de Rust
+      - name: ⚙️ Install Rust
         uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
           override: true
 
-      - name: 🎯 Ajout de la cible x86_64-pc-windows-gnu
+      - name: 🎯 Add Windows GNU target
         run: rustup target add x86_64-pc-windows-gnu
 
-      - name: 🛠 Compilation avec le support CLI (sans GUI)
+      - name: 🛠 Build CLI version of RustDesk
         run: cargo build --release --target x86_64-pc-windows-gnu --features cli
 
-      - name: 📦 Export du binaire compilé
+      - name: 📦 Upload rustdesk.exe
         uses: actions/upload-artifact@v3
         with:
           name: rustdesk-headless
-          path: target/x86_64-pc-windows-gnu/release/rustdesk.exe
+          path: ./target/x86_64-pc-windows-gnu/release/rustdesk.exe
