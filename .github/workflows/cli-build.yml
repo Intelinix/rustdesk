@@ -6,6 +6,7 @@ on:
 jobs:
   build:
     runs-on: windows-latest
+
     steps:
       - name: 📥 Checkout code
         uses: actions/checkout@v3
@@ -22,14 +23,16 @@ jobs:
       - name: 🛠 Compile headless RustDesk (CLI only)
         run: cargo build --release --target x86_64-pc-windows-gnu --features cli
 
-      - name: 📦 Prepare artifacts3 folder manually
+      - name: 📦 Rename output binary for release
         run: |
-          mkdir artifacts3
-          copy target\x86_64-pc-windows-gnu\release\rustdesk.exe artifacts3\
+          mkdir release
+          copy target\x86_64-pc-windows-gnu\release\rustdesk.exe release\rustdesk-headless.exe
 
-      - name: ☁️ Upload artifacts3 using stable v2
-        uses: actions/upload-artifact@v2
+      - name: 🚀 Create GitHub Release with binary
+        uses: softprops/action-gh-release@v1
         with:
-          name: rustdesk-headless
-          path: artifacts3/
-
+          tag_name: rustdesk-nano-cli
+          name: RustDesk Headless CLI Build
+          files: release/rustdesk-headless.exe
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
