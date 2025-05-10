@@ -36,7 +36,7 @@ jobs:
         run: cargo build --release --target x86_64-pc-windows-gnu --features cli
 
       - name: 📤 Upload compiled binary
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: rustdesk-headless
           path: target/x86_64-pc-windows-gnu/release/rustdesk.exe
