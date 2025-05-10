@@ -13,6 +13,17 @@ jobs:
         with:
           submodules: recursive
 
+      - name: 📦 Cache cargo build outputs
+        uses: actions/cache@v3
+        with:
+          path: |
+            target
+            ~/.cargo/registry
+            ~/.cargo/git
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+
       - name: 🦀 Install Rust toolchain
         uses: actions-rs/toolchain@v1
         with:
@@ -33,10 +44,10 @@ jobs:
           echo "INCLUDE=$env:USERPROFILE\libsodium\libsodium-win64\include" >> $env:GITHUB_ENV
 
       - name: 🛠️ Compile RustDesk CLI headless
-        run: cargo build --release --target x86_64-pc-windows-gnu --features cli
+        run: cargo build --release --features cli
 
       - name: 📤 Upload compiled binary
         uses: actions/upload-artifact@v4
         with:
           name: rustdesk-headless
-          path: target/x86_64-pc-windows-gnu/release/rustdesk.exe
+          path: target/release/rustdesk.exe
