@@ -49,6 +49,9 @@ jobs:
           restore-keys: |
             rustdesk-msvc-${{ runner.os }}-
 
+      - name: 🚫 Bypass opus build.rs check
+        run: echo "VCPKG_ROOT=DUMMY" >> $env:GITHUB_ENV
+
       - name: 🛠️ Compile RustDesk Headless (no GUI, no audio)
         run: cargo build --release --target x86_64-pc-windows-msvc --no-default-features --features cli
 
