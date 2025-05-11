@@ -57,7 +57,3 @@ jobs:
         with:
           name: rustdesk-headless
           path: target/x86_64-pc-windows-msvc/release/rustdesk.exe
-
-        with:
-          name: rustdesk-headless
-          path: target/x86_64-pc-windows-msvc/release/rustdesk.exe
