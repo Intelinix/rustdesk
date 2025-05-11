@@ -1,4 +1,4 @@
-name: Build RustDesk Headless CLI
+name: Build RustDesk Headless CLI for Nano Win64
 
 on:
   workflow_dispatch:
