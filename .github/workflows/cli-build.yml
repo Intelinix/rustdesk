@@ -20,6 +20,12 @@ jobs:
           override: true
           target: x86_64-pc-windows-msvc
 
+      - name: ⚙️ Configure sccache
+        run: |
+          rustup component add rust-src
+          cargo install sccache
+          echo "RUSTC_WRAPPER=sccache" >> $env:GITHUB_ENV
+
       - name: 📦 Download and extract libsodium (MSVC)
         run: |
           Invoke-WebRequest -Uri https://download.libsodium.org/libsodium/releases/libsodium-1.0.18-stable-msvc.zip -OutFile libsodium.zip
@@ -31,11 +37,27 @@ jobs:
           echo "LIB=${env:USERPROFILE}\libsodium\libsodium-win64\Release\v142\static" >> $env:GITHUB_ENV
           echo "INCLUDE=${env:USERPROFILE}\libsodium\libsodium-win64\include" >> $env:GITHUB_ENV
 
+      - name: 💾 Cache cargo + target + sccache
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+            ~/.cache/sccache
+          key: rustdesk-msvc-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            rustdesk-msvc-${{ runner.os }}-
+
       - name: 🛠️ Compile RustDesk Headless (no GUI, no audio)
         run: cargo build --release --target x86_64-pc-windows-msvc --no-default-features --features cli
 
       - name: 📤 Upload compiled binary
         uses: actions/upload-artifact@v4
+        with:
+          name: rustdesk-headless
+          path: target/x86_64-pc-windows-msvc/release/rustdesk.exe
+
         with:
           name: rustdesk-headless
           path: target/x86_64-pc-windows-msvc/release/rustdesk.exe
