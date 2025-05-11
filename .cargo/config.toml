@@ -18,6 +18,3 @@ rustflags = [
 
 [net]
 git-fetch-with-cli = true
-
-#[patch."https://github.com/rustdesk-org/magnum-opus"]
-#magnum-opus = { git = "https://github.com/rustdesk-org/magnum-opus", rev = "5cd2bf98", default-features = false, features = [] }
