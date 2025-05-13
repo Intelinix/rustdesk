@@ -51,19 +51,19 @@ jobs:
 
       - name: 📂 Copier nano-cli vers un dossier temporaire
         run: |
-          mkdir temp-nano-cli
-          xcopy /E /I /Y nano-cli temp-nano-cli\nano-cli
+          xcopy /E /I /Y nano-cli temp-nano-cli
 
       - name: 🚫 Bypass opus build.rs check
         run: echo "VCPKG_ROOT=DUMMY" >> $env:GITHUB_ENV
 
       - name: 🛠️ Compile RustDesk Headless CLI depuis dossier isolé
-        working-directory: ./temp-nano-cli/nano-cli
+        working-directory: ./temp-nano-cli
         run: cargo build --release --target x86_64-pc-windows-msvc
 
       - name: 📤 Upload compiled binary
         uses: actions/upload-artifact@v4
         with:
           name: rustdesk-headless
-          path: temp-nano-cli/nano-cli/target/x86_64-pc-windows-msvc/release/nano-cli.exe
-          
+          path: temp-nano-cli/target/x86_64-pc-windows-msvc/release/nano-cli.exe
+
+
