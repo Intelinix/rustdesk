@@ -51,7 +51,7 @@ jobs:
 
       - name: 📂 Copier nano-cli vers un dossier temporaire
         run: |
-          xcopy /E /I /Y nano-cli temp-nano-cli
+          robocopy nano-cli temp-nano-cli /E /NFL /NDL /NJH /NJS
 
       - name: 🚫 Bypass opus build.rs check
         run: echo "VCPKG_ROOT=DUMMY" >> $env:GITHUB_ENV
