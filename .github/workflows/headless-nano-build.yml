@@ -72,10 +72,11 @@ jobs:
           restore-keys: |
             rustdesk-msvc-${{ runner.os }}-
 
-      - name: 📂 Copier nano-cli vers un dossier temporaire
+      - name: 📂 Copier le contenu de nano-cli vers un dossier temporaire
         shell: pwsh
         run: |
-          Copy-Item -Path "nano-cli" -Destination "temp-nano-cli" -Recurse -Force
+          New-Item -ItemType Directory -Force -Path "temp-nano-cli"
+          Copy-Item -Path "nano-cli\*" -Destination "temp-nano-cli" -Recurse -Force
 
       - name: 🔍 Vérifier la présence de Cargo.toml dans le dossier copié
         shell: cmd
