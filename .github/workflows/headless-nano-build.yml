@@ -58,6 +58,10 @@ jobs:
             echo ✅ temp-nano-cli\Cargo.toml est bien présent.
           )
 
+      - name: 🧾 Afficher le contenu de temp-nano-cli\Cargo.toml
+        shell: cmd
+        run: type temp-nano-cli\Cargo.toml
+
       - name: 📄 Contenu final de temp-nano-cli
         shell: cmd
         run: dir temp-nano-cli /s
