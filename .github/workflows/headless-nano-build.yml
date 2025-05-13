@@ -36,8 +36,9 @@ jobs:
 
       # 📂 Copie simplifiée vers dossier temporaire
       - name: 📂 Copier le contenu de nano-cli vers temp-nano-cli
-        shell: cmd
-        run: robocopy nano-cli temp-nano-cli /E /NFL /NDL /NJH /NJS
+        run: |
+          robocopy nano-cli temp-nano-cli /E /NFL /NDL /NJH /NJS
+          if %ERRORLEVEL% GEQ 8 exit /b %ERRORLEVEL%
 
       - name: 🔍 Vérifier la présence de temp-nano-cli\Cargo.toml
         shell: cmd
