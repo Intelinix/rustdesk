@@ -13,6 +13,29 @@ jobs:
         with:
           submodules: recursive
 
+      - name: 🔍 Vérifier la présence de nano-cli/Cargo.toml
+        shell: cmd
+        run: |
+          if not exist nano-cli\Cargo.toml (
+            echo 🚨 ERREUR : nano-cli\Cargo.toml est introuvable.
+            exit 1
+          ) else (
+            echo ✅ nano-cli\Cargo.toml trouvé.
+          )
+
+      - name: 🔍 Vérifier la présence de nano-cli/src/main.rs
+        shell: cmd
+        run: |
+          if not exist nano-cli\src\main.rs (
+            echo 🚨 ERREUR : nano-cli\src\main.rs est introuvable.
+            exit 1
+          ) else (
+            echo ✅ nano-cli\src\main.rs trouvé.
+          )
+
+      - name: 📂 Lister le contenu de nano-cli
+        run: dir nano-cli
+
       - name: 🦀 Install Rust toolchain (MSVC)
         uses: actions-rs/toolchain@v1
         with:
@@ -50,13 +73,24 @@ jobs:
             rustdesk-msvc-${{ runner.os }}-
 
       - name: 📂 Copier nano-cli vers un dossier temporaire
+        shell: pwsh
         run: |
-          robocopy nano-cli temp-nano-cli /E /NFL /NDL /NJH /NJS
+          Copy-Item -Path "nano-cli" -Destination "temp-nano-cli" -Recurse -Force
+
+      - name: 🔍 Vérifier la présence de Cargo.toml dans le dossier copié
+        shell: cmd
+        run: |
+          if not exist temp-nano-cli\Cargo.toml (
+            echo 🚨 ERREUR : temp-nano-cli\Cargo.toml est manquant.
+            exit 1
+          ) else (
+            echo ✅ Cargo.toml copié avec succès.
+          )
 
       - name: 🚫 Bypass opus build.rs check
         run: echo "VCPKG_ROOT=DUMMY" >> $env:GITHUB_ENV
 
-      - name: 🛠️ Compile RustDesk Headless CLI depuis dossier isolé
+      - name: 🛠️ Compiler RustDesk Headless CLI depuis dossier isolé
         working-directory: ./temp-nano-cli
         run: cargo build --release --target x86_64-pc-windows-msvc
 
@@ -65,5 +99,3 @@ jobs:
         with:
           name: rustdesk-headless
           path: temp-nano-cli/target/x86_64-pc-windows-msvc/release/nano-cli.exe
-
-
