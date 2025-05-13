@@ -184,13 +184,22 @@ android_logger = "0.13"
 jni = "0.21"
 android-wakelock = { git = "https://github.com/rustdesk-org/android-wakelock" }
 
-
 [workspace]
 members = [
-  "libs/scrap", "libs/hbb_common", "libs/enigo", "libs/clipboard",
-  "libs/virtual_display", "libs/virtual_display/dylib", "libs/portable", "libs/remote_printer"
+  "libs/hbb_common",
+  "libs/enigo",
+  "libs/clipboard",
+  "libs/portable",
+  "nano-cli"
 ]
-exclude = ["vdi/host", "examples/custom_plugin", "nano-cli"]
+exclude = [
+  "libs/scrap",
+  "libs/virtual_display",
+  "libs/virtual_display/dylib",
+  "libs/remote_printer",
+  "vdi/host",
+  "examples/custom_plugin"
+]
 
 [package.metadata.winres]
 LegalCopyright = "Copyright © 2025 Purslane Ltd. All rights reserved."
