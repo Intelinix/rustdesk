@@ -39,7 +39,13 @@ jobs:
         shell: cmd
         run: |
           robocopy nano-cli temp-nano-cli /E /NFL /NDL /NJH /NJS
-          if %ERRORLEVEL% GEQ 8 exit /b %ERRORLEVEL%
+          if %ERRORLEVEL% LSS 8 (
+            echo ✅ robocopy terminé avec succès (code %ERRORLEVEL%)
+            exit /b 0
+          ) else (
+            echo ❌ robocopy a échoué avec le code %ERRORLEVEL%
+            exit /b %ERRORLEVEL%
+          )
 
       - name: 🔍 Vérifier la présence de temp-nano-cli\Cargo.toml
         shell: cmd
