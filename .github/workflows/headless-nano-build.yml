@@ -13,6 +13,7 @@ jobs:
         with:
           submodules: recursive
 
+      # 🔍 Validation de la structure source
       - name: 🔍 Vérifier la présence de nano-cli/Cargo.toml
         shell: cmd
         run: |
@@ -33,9 +34,34 @@ jobs:
             echo ✅ nano-cli\src\main.rs trouvé.
           )
 
-      - name: 📂 Lister le contenu de nano-cli
-        run: dir nano-cli
+      # 📂 Test de copie vers dossier temporaire
+      - name: 🛠️ Créer le dossier temporaire temp-nano-cli
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force -Path "temp-nano-cli"
 
+      - name: 📂 Copier le contenu de nano-cli vers temp-nano-cli
+        shell: pwsh
+        run: |
+          Get-ChildItem -Path "nano-cli" | ForEach-Object {
+            Copy-Item -Path $_.FullName -Destination "temp-nano-cli" -Recurse -Force
+          }
+
+      - name: 🔍 Vérifier la présence de temp-nano-cli\Cargo.toml
+        shell: cmd
+        run: |
+          if not exist temp-nano-cli\Cargo.toml (
+            echo 🚨 ERREUR : temp-nano-cli\Cargo.toml est manquant.
+            dir temp-nano-cli
+            exit 1
+          ) else (
+            echo ✅ temp-nano-cli\Cargo.toml est bien présent.
+          )
+
+      - name: 📄 Contenu final de temp-nano-cli
+        run: dir temp-nano-cli /s
+
+      # ⚙️ Compilation standard (seulement si les tests précédents passent)
       - name: 🦀 Install Rust toolchain (MSVC)
         uses: actions-rs/toolchain@v1
         with:
@@ -71,22 +97,6 @@ jobs:
           key: rustdesk-msvc-${{ runner.os }}-${{ hashFiles('**/Cargo.lock') }}
           restore-keys: |
             rustdesk-msvc-${{ runner.os }}-
-
-      - name: 📂 Copier le contenu de nano-cli vers un dossier temporaire
-        shell: pwsh
-        run: |
-          New-Item -ItemType Directory -Force -Path "temp-nano-cli"
-          Copy-Item -Path "nano-cli\*" -Destination "temp-nano-cli" -Recurse -Force
-
-      - name: 🔍 Vérifier la présence de Cargo.toml dans le dossier copié
-        shell: cmd
-        run: |
-          if not exist temp-nano-cli\Cargo.toml (
-            echo 🚨 ERREUR : temp-nano-cli\Cargo.toml est manquant.
-            exit 1
-          ) else (
-            echo ✅ Cargo.toml copié avec succès.
-          )
 
       - name: 🚫 Bypass opus build.rs check
         run: echo "VCPKG_ROOT=DUMMY" >> $env:GITHUB_ENV
